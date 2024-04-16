@@ -83,6 +83,18 @@ final class SignupFromModelValidatorTests_ValidationFirstName: XCTestCase {
     )
   }
   
+  func testSignupFromModelValidator_WhenNotContainCharactersFirstNameProvided_ShouldReturnFalse() {
+    
+    // Act
+    let isFirstNameValid = sut.isFirstNameValid(firstName: "1234!$%324")
+    
+    // Assert
+    XCTAssertFalse(
+      isFirstNameValid,
+      "The isFirstNameValid() should have to return FALSE for a valid first name that not contains a Characters than is return TRUE"
+    )
+  }
+  
 }
 
 // MARK: Last name
@@ -160,6 +172,17 @@ final class SignupFromModelValidatorTests_ValidationLastName: XCTestCase {
     )
   }
   
+  func testSignupFromModelValidator_WhenNotContainCharactersLastNameProvided_ShouldReturnFalse() {
+    
+    // Act
+    let isFirstNameValid = sut.isLastNameValid(lastName: "1234!$%324")
+    
+    // Assert
+    XCTAssertFalse(
+      isFirstNameValid,
+      "The isLastNameValid() should have to return FALSE for a valid last name that not contains a Characters than is return TRUE"
+    )
+  }
 }
 
 // MARK: Email

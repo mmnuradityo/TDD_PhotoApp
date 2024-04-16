@@ -9,7 +9,7 @@ import Foundation
 
 
 // MARK: caller
-class SignupFromModelValidator {
+class SignupFromModelValidator: SignupModelValidatorProtocol {
   
   func isFirstNameValid(firstName: String) -> Bool {
     return isValidLength(text: firstName)
