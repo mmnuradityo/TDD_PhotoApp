@@ -14,5 +14,5 @@ protocol SignupPresenterProtocol: AnyObject {
     delegate: SignupViewDelegate
   )
   
-  func processUserSinup(formModel: SignupFormModel)
+  func processUserSinup(formModel: SignupFormModel) throws
 }

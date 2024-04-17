@@ -40,10 +40,9 @@ final class SignupPresenterTests: XCTestCase {
   
   func testSignupPresenter_WhenInformationProvided_WillValidateEachProperty() {
     
-    // Act
-    sut.processUserSinup(formModel: signupFormModel)
+    // Act & Assert
+    XCTAssertNoThrow(try sut.processUserSinup(formModel: signupFormModel))
     
-    // Assert
     XCTAssertTrue(
       mockSignupModelValidator.validate(count: mockSignupModelValidator.firstNameValidated),
       "First Name was not validated"
@@ -70,10 +69,13 @@ final class SignupPresenterTests: XCTestCase {
     // Arrange
     mockSignupModelValidator.firstNameValidated = MockSignupModelValidator.STATUS_ERROR
     
-    // Act
-    sut.processUserSinup(formModel: signupFormModel)
-    
-    // Assert
+    // Act & Assert
+    XCTAssertThrowsError(
+      try sut.processUserSinup(formModel: signupFormModel),
+      "The isFirstNameValid() method should be thrown an error"
+    ) { error in
+      XCTAssertEqual(error as? SignupError, SignupError.invalidFirstName)
+    }
     XCTAssertFalse(
       mockSignupModelValidator.validate(count: mockSignupModelValidator.firstNameValidated),
       "First Name was not validated"
@@ -84,10 +86,13 @@ final class SignupPresenterTests: XCTestCase {
     // Arrange
     mockSignupModelValidator.lastNameValidated = MockSignupModelValidator.STATUS_ERROR
     
-    // Act
-    sut.processUserSinup(formModel: signupFormModel)
-    
-    // Assert
+    // Act & Assert
+    XCTAssertThrowsError(
+      try sut.processUserSinup(formModel: signupFormModel),
+      "The isLastNameValid() method should be thrown an error"
+    ) { error in
+      XCTAssertEqual(error as? SignupError, SignupError.invalidLastName)
+    }
     XCTAssertFalse(
       mockSignupModelValidator.validate(count: mockSignupModelValidator.lastNameValidated),
       "Last Name was not validated"
@@ -98,10 +103,13 @@ final class SignupPresenterTests: XCTestCase {
     // Arrange
     mockSignupModelValidator.emailFormatValidatetd = MockSignupModelValidator.STATUS_ERROR
     
-    // Act
-    sut.processUserSinup(formModel: signupFormModel)
-    
-    // Assert
+    // Act & Assert
+    XCTAssertThrowsError(
+      try sut.processUserSinup(formModel: signupFormModel),
+      "The isEmailValid() method should be thrown an error"
+    ) { error in
+      XCTAssertEqual(error as? SignupError, SignupError.invalidEmail)
+    }
     XCTAssertFalse(
       mockSignupModelValidator.validate(count: mockSignupModelValidator.emailFormatValidatetd),
       "Email format was not validated"
@@ -112,10 +120,13 @@ final class SignupPresenterTests: XCTestCase {
     // Arrange
     mockSignupModelValidator.passwordValidated = MockSignupModelValidator.STATUS_ERROR
     
-    // Act
-    sut.processUserSinup(formModel: signupFormModel)
-    
-    // Assert
+    // Act & Assert
+    XCTAssertThrowsError(
+      try sut.processUserSinup(formModel: signupFormModel),
+      "The isNewPasswordValid() method should be thrown an error"
+    ) { error in
+      XCTAssertEqual(error as? SignupError, SignupError.invalidPassword)
+    }
     XCTAssertFalse(
       mockSignupModelValidator.validate(count: mockSignupModelValidator.passwordValidated),
       "Password was not validated"
@@ -126,38 +137,41 @@ final class SignupPresenterTests: XCTestCase {
     // Arrange
     mockSignupModelValidator.passwordEqualityValidated = MockSignupModelValidator.STATUS_ERROR
     
-    // Act
-    sut.processUserSinup(formModel: signupFormModel)
-    
-    // Assert
+    // Act & Assert
+    XCTAssertThrowsError(
+      try sut.processUserSinup(formModel: signupFormModel),
+      "The doPasswordMatch() method should be thrown an error"
+    ) { error in
+      XCTAssertEqual(error as? SignupError, SignupError.invalidConfirmationPassword)
+    }
     XCTAssertFalse(
       mockSignupModelValidator.validate(count: mockSignupModelValidator.passwordEqualityValidated),
       "Did not validate if passwords match"
     )
   }
   
-  func testSignupPresenter_WhenGivenValidFormModel_ShouldCallSignupMethod() {
+  func testSignupPresenter_WhenGivenValidFormModel_ShouldCallSignupMethod() throws {
     
     // Act
-    sut.processUserSinup(formModel: signupFormModel)
+    try sut.processUserSinup(formModel: signupFormModel)
     
     // Assert
     XCTAssertTrue(mockSignupWebService.isSignupMethodCalled, "The signup() method was not called in the SignupWebService class")
   }
   
-  func testSignupPresenter_WhenSginupOperasionSuccessfull_CallSuccessOnViewDelegate() {
+  func testSignupPresenter_WhenSginupOperasionSuccessfull_CallSuccessOnViewDelegate() throws {
     // Arrange
     let expectation = self.expectation(description: "Expectation is succesfullSignup() method to be called")
     mockSignupViewDelegate.expectation = expectation
     
     // Act
-    sut.processUserSinup(formModel: signupFormModel)
+    try sut.processUserSinup(formModel: signupFormModel)
     self.wait(for: [expectation], timeout: 5)
     
     // Assert
     
     XCTAssertEqual(
-      mockSignupViewDelegate.successfullSignupCounter, 1, 
+      mockSignupViewDelegate.successfullSignupCounter, 1,
       "The successfullSignup() method was called more than 1 time"
     )
     XCTAssertEqual(
@@ -166,7 +180,7 @@ final class SignupPresenterTests: XCTestCase {
     )
   }
   
-  func testSignupPresenter_WhenSginupOperasionError_CallErrorHandlerOnViewDelegate() {
+  func testSignupPresenter_WhenSginupOperasionError_CallErrorHandlerOnViewDelegate() throws {
     // Arrange
     let expectation = self.expectation(description: "Expectation is errorSignup() method to be called")
     let errorDescription = "Signup request was not successful"
@@ -174,7 +188,7 @@ final class SignupPresenterTests: XCTestCase {
     mockSignupViewDelegate.expectation = expectation
     
     // Act
-    sut.processUserSinup(formModel: signupFormModel)
+    try sut.processUserSinup(formModel: signupFormModel)
     self.wait(for: [expectation], timeout: 5)
     
     // Assert

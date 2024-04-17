@@ -40,7 +40,12 @@ class SignupViewController: UIViewController {
       password: userPasswordTextField.text ?? "",
       confirmPassword: userPasswordConfirmationTextField.text ?? ""
     )
-    presenter?.processUserSinup(formModel: signupFormModel)
+    
+    do {
+      try presenter?.processUserSinup(formModel: signupFormModel)
+    } catch {
+      print(error)
+    }
   }
   
 }

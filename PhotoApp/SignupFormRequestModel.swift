@@ -10,7 +10,6 @@ import Foundation
 struct SignupFormRequestModel: Encodable {
   let email: String
   let password: String
-  let confirmPassword: String
   let firstName: String
   let lastName: String
 }

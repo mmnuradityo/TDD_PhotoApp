@@ -22,7 +22,7 @@ final class SignupWebSeviceTests: XCTestCase {
       urlString: SignupConstanats.signupURLString, urlSession: urlSession
     )
     sigupFormRequestModel = SignupFormRequestModel(
-      email: "email@email.com", password: "Password!23", confirmPassword: "Password!23", firstName: "FirstName", lastName: "LastName"
+      email: "email@email.com", password: "Password!23", firstName: "FirstName", lastName: "LastName"
     )
   }
   

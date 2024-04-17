@@ -20,7 +20,7 @@ class MockSignupPresenter: SignupPresenterProtocol {
     // TODO:
   }
   
-  func processUserSinup(formModel: SignupFormModel) {
+  func processUserSinup(formModel: SignupFormModel) throws {
     proccessUserSignupCalled = true
   }
   
