@@ -8,7 +8,7 @@
 import XCTest
 @testable import PhotoApp
 
-final class SignupViewCintrollerTests: XCTestCase {
+final class SignupViewCintrollerTests_InitialView: XCTestCase {
   
   var storyboard: UIStoryboard!
   var sut: SignupViewController!
@@ -112,3 +112,77 @@ final class SignupViewCintrollerTests: XCTestCase {
   }
 }
 
+final class SignupViewCintrollerTests_Attributes: XCTestCase {
+  
+  var storyboard: UIStoryboard!
+  var sut: SignupViewController!
+  
+  override func setUpWithError() throws {
+    storyboard = UIStoryboard(name: "Main", bundle: nil)
+    
+    sut = storyboard.instantiateViewController(identifier: "SignupViewController") as SignupViewController
+    sut.loadViewIfNeeded()
+  }
+  
+  override func tearDownWithError() throws {
+    storyboard = nil
+    sut = nil
+  }
+  
+  func testSignupViewCintroller_WhenCreated_HasEmailAddressContentTypeSet() throws {
+    // Arrange
+    let emailTextfield = try XCTUnwrap(sut.userEmailTextField, "The userEmailTextField is not connected to be an IBOutlet")
+    
+    // Act
+    let emailTextfieldContentType = emailTextfield.textContentType
+    
+    // Assert
+    XCTAssertEqual(
+      emailTextfieldContentType, UITextContentType.emailAddress,
+      "The email text field does not have the email address content type set"
+    )
+  }
+  
+  func testSignupViewCintroller_WhenEmailTextfieldIsFirstResponder_HasKeyboardTypeSet() throws {
+    // Arrange
+    let emailTextfield = try XCTUnwrap(sut.userEmailTextField, "The userEmailTextField is not connected to be an IBOutlet")
+    
+    // Act
+    emailTextfield.becomeFirstResponder()
+    let emailTextfieldKeyboardType = emailTextfield.keyboardType
+    
+    // Assert
+    XCTAssertEqual(
+      emailTextfieldKeyboardType, UIKeyboardType.emailAddress,
+      "The email text field does not have the email address keyboard type set"
+    )
+  }
+  
+  func testSignupViewCintroller_WhenCreated_HasPasswordIsSecureTextEntry() throws {
+    // Arrange
+    let passwordTextfield = try XCTUnwrap(sut.userPasswordTextField, "The userPasswordTextField is not connected to be an IBOutlet")
+    
+    // Act
+    let passwordTextfieldIsSecureTextEntry = passwordTextfield.isSecureTextEntry
+    
+    // Assert
+    XCTAssertTrue(
+      passwordTextfieldIsSecureTextEntry,
+      "The password text field does not have the secure text entry set"
+    )
+  }
+  
+  func testSignupViewCintroller_WhenCreated_HasConfirmationPasswordIsSecureTextEntry() throws {
+    // Arrange
+    let passwordConfirmationTextfield = try XCTUnwrap(sut.userPasswordConfirmationTextField, "The userPasswordConfirmationTextField is not connected to be an IBOutlet")
+    
+    // Act
+    let passwordConfirmationTextfieldIsSecureTextEntry = passwordConfirmationTextfield.isSecureTextEntry
+    
+    // Assert
+    XCTAssertTrue(
+      passwordConfirmationTextfieldIsSecureTextEntry,
+      "The password confirmation text field does not have the secure text entry set"
+    )
+  }
+}
