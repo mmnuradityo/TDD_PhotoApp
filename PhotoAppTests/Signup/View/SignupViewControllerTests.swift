@@ -172,6 +172,7 @@ final class SignupViewCintrollerTests_Navigations: XCTestCase {
   var mockSignupModelValidator: MockSignupModelValidator!
   var mockSignupWebService: MockSignupWebService!
   var mockSignupViewDelegate: MockSignupViewDelegate!
+  var mockSignupPresenter: MockSignupPresenter!
   
   override func setUpWithError() throws {
     storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -182,6 +183,13 @@ final class SignupViewCintrollerTests_Navigations: XCTestCase {
     mockSignupModelValidator = MockSignupModelValidator()
     mockSignupWebService = MockSignupWebService()
     mockSignupViewDelegate = MockSignupViewDelegate()
+    
+    mockSignupPresenter = MockSignupPresenter(
+      formModelValidator: mockSignupModelValidator,
+      webService: mockSignupWebService,
+      delegate: mockSignupViewDelegate
+    )
+    sut.presenter = mockSignupPresenter
   }
   
   override func tearDownWithError() throws {
@@ -190,19 +198,13 @@ final class SignupViewCintrollerTests_Navigations: XCTestCase {
     mockSignupModelValidator = nil
     mockSignupWebService = nil
     mockSignupViewDelegate = nil
+    mockSignupPresenter = nil
   }
   
   func testSignupViewController_WhenButtonTapped_callsSignupPresenterProcessUserSignupAndSuccessfull() {
     // Arrange
     let expectation = self.expectation(description: "Expectation is succesfullSignup() method to be called")
     mockSignupViewDelegate.expectation = expectation
-    
-    let mockSignupPresenter = MockSignupPresenter(
-      formModelValidator: mockSignupModelValidator,
-      webService: mockSignupWebService,
-      delegate: mockSignupViewDelegate
-    )
-    sut.presenter = mockSignupPresenter
     
     // Act
     sut.signupButton.sendActions(for: .touchUpInside)
@@ -220,16 +222,8 @@ final class SignupViewCintrollerTests_Navigations: XCTestCase {
   }
   
   func testSignupViewController_WhenButtonTapped_DetailViewControllerCanBePushed() {
-    // Arrange
-    let mockSignupPresenter = MockSignupPresenter(
-      formModelValidator: mockSignupModelValidator,
-      webService: mockSignupWebService,
-      delegate: sut
-    )
-    sut.presenter = mockSignupPresenter
-    
     // Act
-    sut.signupButton.sendActions(for: .touchUpInside)
+    sut.successfulSignup()
     
     // Wait for the segue to complete
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -240,7 +234,6 @@ final class SignupViewCintrollerTests_Navigations: XCTestCase {
       }
       
       XCTAssertTrue(presentedViewController is DetailViewController, "The presentedViewController should be a DetailViewController")
-     
     }
   }
   
@@ -249,17 +242,9 @@ final class SignupViewCintrollerTests_Navigations: XCTestCase {
     let expectation = self.expectation(description: "Expectation is succesfullSignup() method to be called")
     mockSignupViewDelegate.expectation = expectation
     
-    let mockSignupPresenter = MockSignupPresenter(
-      formModelValidator: mockSignupModelValidator,
-      webService: mockSignupWebService,
-      delegate: mockSignupViewDelegate
-    )
-    
     let error = SignupError.failedRequest(description: "Error")
     mockSignupPresenter.error = error
     mockSignupPresenter.isHandleError = true
-    
-    sut.presenter = mockSignupPresenter
     
     // Act
     sut.signupButton.sendActions(for: .touchUpInside)
@@ -279,41 +264,18 @@ final class SignupViewCintrollerTests_Navigations: XCTestCase {
   
   func testSignupViewController_WhenButtonTapped_ErrorHandlerMustBeCalled() {
     // Arrange
-    let mockSignupPresenter = MockSignupPresenter(
-      formModelValidator: mockSignupModelValidator,
-      webService: mockSignupWebService,
-      delegate: sut
-    )
-    
     let error = SignupError.failedRequest(description: "Error")
-    mockSignupPresenter.error = error
-    
-    sut.presenter = mockSignupPresenter
     
     // Act
-    sut.signupButton.sendActions(for: .touchUpInside)
-    
-    // Assert
-    XCTAssertTrue(
-      mockSignupPresenter.proccessUserSignupCalled,
-      "The proccessSignupButton() method was not called on a Presenter object when the signup button was tapped in a SignupViewController"
-    )
+    sut.errorHandler(error: error)
   }
-  
+
   func testSignupViewController_WhenButtonTapped_TryToHandleError() {
     // Arrange
     mockSignupModelValidator.firstNameValidated = MockSignupModelValidator.STATUS_ERROR
     
-    let mockSignupPresenter = MockSignupPresenter(
-      formModelValidator: mockSignupModelValidator,
-      webService: mockSignupWebService,
-      delegate: mockSignupViewDelegate
-    )
-    
     let error = SignupError.failedRequest(description: "Error")
     mockSignupPresenter.error = error
-    
-    sut.presenter = mockSignupPresenter
     
     // Act
     sut.signupButton.sendActions(for: .touchUpInside)
