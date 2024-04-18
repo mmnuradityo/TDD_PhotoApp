@@ -53,7 +53,7 @@ class SignupViewController: UIViewController {
 extension SignupViewController: SignupViewDelegate {
   
   func successfulSignup() {
-    print("signup is Success")
+    self.performSegue(withIdentifier: "moveToDetail", sender: nil)
   }
   
   func errorHandler(error: SignupError) {

@@ -28,16 +28,17 @@ class SignupWebService: SignupWebServiceProtocol {
     request.httpBody = try? JSONEncoder().encode(fromModel)
     
     let dataTask = urlSession.dataTask(with: request) { data, response, error in
-      
-      if let requestError = error {
-        completionHandler(nil, SignupError.failedRequest(description: requestError.localizedDescription))
-        return
-      }
-      
-      if let data = data, let signupResponseModel = try? JSONDecoder().decode(SignupResponseModel.self, from: data) {
-        completionHandler(signupResponseModel, nil)
-      } else {
-        completionHandler(nil, SignupError.invalidReposnseModel)
+      DispatchQueue.main.async {
+        if let requestError = error {
+          completionHandler(nil, SignupError.failedRequest(description: requestError.localizedDescription))
+          return
+        }
+        
+        if let data = data, let signupResponseModel = try? JSONDecoder().decode(SignupResponseModel.self, from: data) {
+          completionHandler(signupResponseModel, nil)
+        } else {
+          completionHandler(nil, SignupError.invalidReposnseModel)
+        }
       }
     }
     dataTask.resume()

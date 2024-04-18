@@ -7,21 +7,38 @@
 
 import Foundation
 @testable import PhotoApp
+import XCTest
 
 class MockSignupPresenter: SignupPresenterProtocol {
   
   var proccessUserSignupCalled: Bool = false
+  var isHandleError: Bool = false
+  var error: SignupError?
+  var delegate: SignupViewDelegate?
+  var expectation: XCTestExpectation?
   
   required init(
     formModelValidator: PhotoApp.SignupModelValidatorProtocol,
     webService: PhotoApp.SignupWebServiceProtocol,
     delegate: PhotoApp.SignupViewDelegate
   ) {
-    // TODO:
+    self.delegate = delegate
   }
   
   func processUserSinup(formModel: SignupFormModel) throws {
     proccessUserSignupCalled = true
+    
+    if let error = error {
+      if isHandleError {
+        delegate?.errorHandler(error: error)
+      } else{
+        throw error
+      }
+      
+    } else {
+      delegate?.successfulSignup()
+    }
+    expectation?.fulfill()
   }
   
 }
