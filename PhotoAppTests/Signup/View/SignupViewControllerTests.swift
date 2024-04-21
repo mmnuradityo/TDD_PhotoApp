@@ -244,7 +244,6 @@ final class SignupViewCintrollerTests_Navigations: XCTestCase {
     
     let error = SignupError.failedRequest(description: "Error")
     mockSignupPresenter.error = error
-    mockSignupPresenter.isHandleError = true
     
     // Act
     sut.signupButton.sendActions(for: .touchUpInside)

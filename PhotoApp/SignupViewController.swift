@@ -20,9 +20,26 @@ class SignupViewController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    
+    // compine online when debugs build
+//    #if DEBUG
+//    if CommandLine.arguments.contains("-skinSurvey") {
+//      print("Skin Survey page")
+//    }
+//    #endif
+//
+//    #if DEBUG
+//    if ProcessInfo.processInfo.arguments.contains("-skinSurvey") {
+//      print("Skin Survey page")
+//    }
+//    #endif
+    
     if presenter == nil {
       let signupModelValidator = SignupFromModelValidator()
-      let signupWebService = SignupWebService(urlString: SignupConstanats.signupURLString)
+      
+      let signupUrls = ProcessInfo.processInfo.environment["signupUrl"] ?? "SignupConstanats.signupURLString"
+      
+      let signupWebService = SignupWebService(urlString: signupUrls)
       
       self.presenter = SignupPresenter(
         formModelValidator: signupModelValidator,
@@ -30,6 +47,7 @@ class SignupViewController: UIViewController {
         delegate: self
       )
     }
+    setupDismissKeyboardGesture()
   }
   
   @IBAction func signupButtonTapped(_ sender: Any) {
@@ -41,11 +59,7 @@ class SignupViewController: UIViewController {
       confirmPassword: userPasswordConfirmationTextField.text ?? ""
     )
     
-    do {
-      try presenter?.processUserSinup(formModel: signupFormModel)
-    } catch {
-      print(error)
-    }
+    presenter?.processUserSinup(formModel: signupFormModel)
   }
   
 }
@@ -53,11 +67,35 @@ class SignupViewController: UIViewController {
 extension SignupViewController: SignupViewDelegate {
   
   func successfulSignup() {
-    self.performSegue(withIdentifier: "moveToDetail", sender: nil)
+//    self.performSegue(withIdentifier: "moveToDetail", sender: nil)
+    
+      let alert = UIAlertController(
+        title: "Success",
+        message: "This signup operation was successful",
+        preferredStyle: .alert
+      )
+      alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+      alert.view.accessibilityIdentifier = "successAlertDialog"
+      self.present(alert, animated: true, completion: nil)
   }
   
   func errorHandler(error: SignupError) {
-    print("signup is failed: \(error.localizedDescription)")
+    let alert = UIAlertController(
+      title: "Error",
+      message: "Yuor request could not be proccessed at this time cause \(error.localizedDescription)",
+      preferredStyle: .alert
+    )
+    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+    alert.view.accessibilityIdentifier = "errorAlertDialog"
+    self.present(alert, animated: true, completion: nil)
   }
   
+  private func setupDismissKeyboardGesture() {
+    let dismissKeyboardTap = UITapGestureRecognizer(target: self, action: #selector(viewTapped(_ : )))
+    view.addGestureRecognizer(dismissKeyboardTap)
+  }
+  
+  @objc func viewTapped(_ recognizer: UITapGestureRecognizer) {
+    view.endEditing(true) // resign first responder
+  }
 }

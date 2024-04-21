@@ -23,21 +23,26 @@ class SignupPresenter: SignupPresenterProtocol {
     self.delegate = delegate
   }
   
-  func processUserSinup(formModel: SignupFormModel) throws {
+  func processUserSinup(formModel: SignupFormModel) {
     if !formModelValidator.isFirstNameValid(firstName: formModel.firstName) {
-      throw SignupError.invalidFirstName
+      delegate?.errorHandler(error: SignupError.invalidFirstName)
+      return
     }
     if !formModelValidator.isLastNameValid(lastName: formModel.lastName) {
-      throw SignupError.invalidLastName
+      delegate?.errorHandler(error: SignupError.invalidLastName)
+      return
     }
     if !formModelValidator.isEmailValid(email: formModel.email) {
-      throw SignupError.invalidEmail
+      delegate?.errorHandler(error: SignupError.invalidEmail)
+      return
     }
     if !formModelValidator.isNewPasswordValid(password: formModel.password) {
-      throw SignupError.invalidPassword
+      delegate?.errorHandler(error: SignupError.invalidPassword)
+      return
     }
     if !formModelValidator.doPasswordMatch(password: formModel.password, repeatePassword: formModel.confirmPassword) {
-      throw SignupError.invalidConfirmationPassword
+      delegate?.errorHandler(error: SignupError.invalidConfirmationPassword)
+      return
     }
     
     let requestModel = SignupFormRequestModel(

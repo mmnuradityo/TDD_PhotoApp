@@ -40,9 +40,10 @@ final class SignupPresenterTests: XCTestCase {
   
   func testSignupPresenter_WhenInformationProvided_WillValidateEachProperty() {
     
-    // Act & Assert
-    XCTAssertNoThrow(try sut.processUserSinup(formModel: signupFormModel))
+    // Act
+    sut.processUserSinup(formModel: signupFormModel)
     
+    // Assert
     XCTAssertTrue(
       mockSignupModelValidator.validate(count: mockSignupModelValidator.firstNameValidated),
       "First Name was not validated"
@@ -69,13 +70,11 @@ final class SignupPresenterTests: XCTestCase {
     // Arrange
     mockSignupModelValidator.firstNameValidated = MockSignupModelValidator.STATUS_ERROR
     
-    // Act & Assert
-    XCTAssertThrowsError(
-      try sut.processUserSinup(formModel: signupFormModel),
-      "The isFirstNameValid() method should be thrown an error"
-    ) { error in
-      XCTAssertEqual(error as? SignupError, SignupError.invalidFirstName)
-    }
+    // Act
+    sut.processUserSinup(formModel: signupFormModel)
+    
+    // Assert
+    XCTAssertEqual(mockSignupViewDelegate.error, SignupError.invalidFirstName)
     XCTAssertFalse(
       mockSignupModelValidator.validate(count: mockSignupModelValidator.firstNameValidated),
       "First Name was not validated"
@@ -86,13 +85,11 @@ final class SignupPresenterTests: XCTestCase {
     // Arrange
     mockSignupModelValidator.lastNameValidated = MockSignupModelValidator.STATUS_ERROR
     
-    // Act & Assert
-    XCTAssertThrowsError(
-      try sut.processUserSinup(formModel: signupFormModel),
-      "The isLastNameValid() method should be thrown an error"
-    ) { error in
-      XCTAssertEqual(error as? SignupError, SignupError.invalidLastName)
-    }
+    // Act
+    sut.processUserSinup(formModel: signupFormModel)
+    
+    //Assert
+    XCTAssertEqual(mockSignupViewDelegate.error, SignupError.invalidLastName)
     XCTAssertFalse(
       mockSignupModelValidator.validate(count: mockSignupModelValidator.lastNameValidated),
       "Last Name was not validated"
@@ -103,13 +100,11 @@ final class SignupPresenterTests: XCTestCase {
     // Arrange
     mockSignupModelValidator.emailFormatValidatetd = MockSignupModelValidator.STATUS_ERROR
     
-    // Act & Assert
-    XCTAssertThrowsError(
-      try sut.processUserSinup(formModel: signupFormModel),
-      "The isEmailValid() method should be thrown an error"
-    ) { error in
-      XCTAssertEqual(error as? SignupError, SignupError.invalidEmail)
-    }
+    // Act
+    sut.processUserSinup(formModel: signupFormModel)
+    
+    //Assert
+    XCTAssertEqual(mockSignupViewDelegate.error, SignupError.invalidEmail)
     XCTAssertFalse(
       mockSignupModelValidator.validate(count: mockSignupModelValidator.emailFormatValidatetd),
       "Email format was not validated"
@@ -120,13 +115,11 @@ final class SignupPresenterTests: XCTestCase {
     // Arrange
     mockSignupModelValidator.passwordValidated = MockSignupModelValidator.STATUS_ERROR
     
-    // Act & Assert
-    XCTAssertThrowsError(
-      try sut.processUserSinup(formModel: signupFormModel),
-      "The isNewPasswordValid() method should be thrown an error"
-    ) { error in
-      XCTAssertEqual(error as? SignupError, SignupError.invalidPassword)
-    }
+    // Act
+    sut.processUserSinup(formModel: signupFormModel)
+    
+    //Assert
+    XCTAssertEqual(mockSignupViewDelegate.error, SignupError.invalidPassword)
     XCTAssertFalse(
       mockSignupModelValidator.validate(count: mockSignupModelValidator.passwordValidated),
       "Password was not validated"
@@ -137,35 +130,33 @@ final class SignupPresenterTests: XCTestCase {
     // Arrange
     mockSignupModelValidator.passwordEqualityValidated = MockSignupModelValidator.STATUS_ERROR
     
-    // Act & Assert
-    XCTAssertThrowsError(
-      try sut.processUserSinup(formModel: signupFormModel),
-      "The doPasswordMatch() method should be thrown an error"
-    ) { error in
-      XCTAssertEqual(error as? SignupError, SignupError.invalidConfirmationPassword)
-    }
+    // Act
+    sut.processUserSinup(formModel: signupFormModel)
+    
+    //Assert
+    XCTAssertEqual(mockSignupViewDelegate.error, SignupError.invalidConfirmationPassword)
     XCTAssertFalse(
       mockSignupModelValidator.validate(count: mockSignupModelValidator.passwordEqualityValidated),
       "Did not validate if passwords match"
     )
   }
   
-  func testSignupPresenter_WhenGivenValidFormModel_ShouldCallSignupMethod() throws {
+  func testSignupPresenter_WhenGivenValidFormModel_ShouldCallSignupMethod() {
     
     // Act
-    try sut.processUserSinup(formModel: signupFormModel)
+    sut.processUserSinup(formModel: signupFormModel)
     
     // Assert
     XCTAssertTrue(mockSignupWebService.isSignupMethodCalled, "The signup() method was not called in the SignupWebService class")
   }
   
-  func testSignupPresenter_WhenSginupOperasionSuccessfull_CallSuccessOnViewDelegate() throws {
+  func testSignupPresenter_WhenSginupOperasionSuccessfull_CallSuccessOnViewDelegate() {
     // Arrange
     let expectation = self.expectation(description: "Expectation is succesfullSignup() method to be called")
     mockSignupViewDelegate.expectation = expectation
     
     // Act
-    try sut.processUserSinup(formModel: signupFormModel)
+    sut.processUserSinup(formModel: signupFormModel)
     self.wait(for: [expectation], timeout: 5)
     
     // Assert
@@ -180,7 +171,7 @@ final class SignupPresenterTests: XCTestCase {
     )
   }
   
-  func testSignupPresenter_WhenSginupOperasionError_CallErrorHandlerOnViewDelegate() throws {
+  func testSignupPresenter_WhenSginupOperasionError_CallErrorHandlerOnViewDelegate() {
     // Arrange
     let expectation = self.expectation(description: "Expectation is errorSignup() method to be called")
     let errorDescription = "Signup request was not successful"
@@ -188,7 +179,7 @@ final class SignupPresenterTests: XCTestCase {
     mockSignupViewDelegate.expectation = expectation
     
     // Act
-    try sut.processUserSinup(formModel: signupFormModel)
+    sut.processUserSinup(formModel: signupFormModel)
     self.wait(for: [expectation], timeout: 5)
     
     // Assert

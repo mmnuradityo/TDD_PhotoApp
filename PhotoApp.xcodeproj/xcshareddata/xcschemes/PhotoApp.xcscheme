@@ -27,8 +27,19 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES"
-      shouldAutocreateTestPlan = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES">
+      <TestPlans>
+         <TestPlanReference
+            reference = "container:PhotoAppUITests/PhotoApp-UiTestPlan.xctestplan"
+            default = "YES">
+         </TestPlanReference>
+         <TestPlanReference
+            reference = "container:PhotoApp-MainTestPlan.xctestplan">
+         </TestPlanReference>
+         <TestPlanReference
+            reference = "container:PhotoAppTests/PhotoApp-UnitTestPlan.xctestplan">
+         </TestPlanReference>
+      </TestPlans>
       <Testables>
          <TestableReference
             skipped = "NO"
@@ -46,7 +57,7 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "84329A322BC81372001D2C39"
+               BlueprintIdentifier = "849CD36D2BD21D000023A119"
                BuildableName = "PhotoAppUITests.xctest"
                BlueprintName = "PhotoAppUITests"
                ReferencedContainer = "container:PhotoApp.xcodeproj">

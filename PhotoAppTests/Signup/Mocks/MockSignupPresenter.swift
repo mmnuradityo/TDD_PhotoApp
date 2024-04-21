@@ -12,7 +12,6 @@ import XCTest
 class MockSignupPresenter: SignupPresenterProtocol {
   
   var proccessUserSignupCalled: Bool = false
-  var isHandleError: Bool = false
   var error: SignupError?
   var delegate: SignupViewDelegate?
   var expectation: XCTestExpectation?
@@ -25,16 +24,11 @@ class MockSignupPresenter: SignupPresenterProtocol {
     self.delegate = delegate
   }
   
-  func processUserSinup(formModel: SignupFormModel) throws {
+  func processUserSinup(formModel: SignupFormModel) {
     proccessUserSignupCalled = true
     
     if let error = error {
-      if isHandleError {
-        delegate?.errorHandler(error: error)
-      } else{
-        throw error
-      }
-      
+      delegate?.errorHandler(error: error)
     } else {
       delegate?.successfulSignup()
     }
